@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+       
+	<bean id="serviceRegistry" class="com.xy.apple.registry.zookeeper.ZooKeeperServiceRegistry">
+        <constructor-arg name="zookeeperAddress" value="127.0.0.1:2181"/>
+    </bean>
+    
+    <bean id="rpcProtocol" class="com.xy.apple.server.RpcProtocol">
+        <constructor-arg name="port" value="8000"/>
+        <constructor-arg name="serviceRegistry" ref="serviceRegistry"/>
+    </bean>
+    <bean id="userServiceImpl" class="com.xy.rpc.UserServiceImpl"></bean>
+    
+    <bean class="com.xy.apple.server.RpcService">
+    	<property name="interfaceName" value="com.xy.rpc.UserService"/>
+    	<property name="interfaceService" ref="userServiceImpl"/>
+    	<property name="rpcProtocol" ref="rpcProtocol"/>
+    </bean>
+    
+    <bean class="com.xy.apple.server.RpcBootstrap">
+    	<property name="rpcProtocol" ref="rpcProtocol"/>
+    </bean>
+</beans>
