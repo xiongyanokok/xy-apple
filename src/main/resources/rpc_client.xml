@@ -8,17 +8,12 @@
        http://www.springframework.org/schema/context/spring-context.xsd">
        
 	<bean id="serviceDiscovery" class="com.xy.apple.registry.zookeeper.ZooKeeperServiceDiscovery">
-        <constructor-arg name="zookeeperAddress" value="127.0.0.1:2181"/>
+        <property name="zookeeperAddress" value="127.0.0.1:2181"/>
     </bean>
 
-    <bean id="rpcProxy" class="com.xy.apple.netty.RpcProxy">
-        <constructor-arg name="serviceDiscovery" ref="serviceDiscovery"/>
-    </bean>
-    
     <bean class="com.xy.apple.netty.RpcReferer">
     	<property name="id" value="userService"/>
     	<property name="interfaceName" value="com.xy.rpc.UserService"/>
-    	<property name="rpcProxy" ref="rpcProxy"/>
     </bean>
-
+    
 </beans>
