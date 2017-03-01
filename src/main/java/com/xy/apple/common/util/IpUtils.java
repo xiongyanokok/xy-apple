@@ -27,7 +27,10 @@ public class IpUtils {
     
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3,5}$");
 
-    
+    /**
+     * 获取本机地址
+     * @return
+     */
 	public static InetAddress getLocalAddress0() {
 		InetAddress localAddress = null;
 		try {
