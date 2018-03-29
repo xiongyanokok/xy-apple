@@ -1,14 +1,13 @@
 package com.xy.apple.netty;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.xy.apple.exception.ParamNotFoundException;
+import com.xy.apple.exception.RpcException;
 import com.xy.apple.registry.ServiceDiscovery;
 
 public class RpcReferer implements ApplicationContextAware {
@@ -44,25 +43,24 @@ public class RpcReferer implements ApplicationContextAware {
 	}
 
 	
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		ServiceDiscovery serviceDiscovery = (ServiceDiscovery) applicationContext.getBean("serviceDiscovery");
 		if (null == serviceDiscovery) {
 			throw new BeanCreationException("serviceDiscovery", " not found");
 		}
 		
 		if (StringUtils.isEmpty(id)) {
-			throw new ParamNotFoundException("id not found ");
+			throw new RpcException("id not found ");
 		}
 		
 		if (StringUtils.isEmpty(interfaceName)) {
-			throw new ParamNotFoundException("interfaceName not found ");
+			throw new RpcException("interfaceName not found ");
 		}
 		
 		Class<?> interfaceClass = null;
 		try {
 			interfaceClass = Class.forName(interfaceName);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
 		// 创建代理类
 		Object proxy = RpcProxy.create(interfaceClass, serviceVersion, serviceDiscovery);

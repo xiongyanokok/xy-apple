@@ -11,12 +11,16 @@ import org.apache.commons.lang3.StringUtils;
  * @author xiongyan
  * @since 1.0.0
  */
-public final class RpcCommon {
+public class RpcCommon {
+	
+	private RpcCommon() {
+		
+	}
 
 	/**
      * 存放 服务名 与 服务对象 之间的映射关系
      */
-    private static Map<String, Object> handlerMap = new ConcurrentHashMap<String, Object>();
+    private static Map<String, Object> handlerMap = new ConcurrentHashMap<>();
     
     public static void setHandlerMap(String interfaceName, String serviceVersion, Object serviceRef) {
     	if (StringUtils.isNotEmpty(serviceVersion)) {

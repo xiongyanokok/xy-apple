@@ -9,8 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.CollectionUtils;
 
-import com.xy.apple.exception.ParamNotFoundException;
+import com.xy.apple.exception.RpcException;
 import com.xy.apple.registry.ServiceDiscovery;
 
 /**
@@ -38,7 +39,7 @@ public class ZooKeeperServiceDiscovery implements ServiceDiscovery, Initializing
 	
 	public void afterPropertiesSet() throws Exception {
 		if (StringUtils.isEmpty(zookeeperAddress)) {
-			throw new ParamNotFoundException("zookeeperAddress not found ");
+			throw new RpcException("zookeeperAddress not found ");
 		}
 		
 		// 创建 ZooKeeper 客户端
@@ -50,11 +51,11 @@ public class ZooKeeperServiceDiscovery implements ServiceDiscovery, Initializing
 		// 获取 service 节点
 		String servicePath = Constant.ZK_REGISTRY_PATH + "/" + serviceName;
 		if (!zkClient.exists(servicePath)) {
-			throw new RuntimeException(String.format("can not find any service node on path: %s", servicePath));
+			throw new RpcException(String.format("can not find any service node on path: %s", servicePath));
 		}
 		List<String> addressList = zkClient.getChildren(servicePath);
-		if (null == addressList || addressList.size() == 0) {
-			throw new RuntimeException(String.format("can not find any address node on path: %s", servicePath));
+		if (CollectionUtils.isEmpty(addressList)) {
+			throw new RpcException(String.format("can not find any address node on path: %s", servicePath));
 		}
 		// 获取 address 节点
 		String address;

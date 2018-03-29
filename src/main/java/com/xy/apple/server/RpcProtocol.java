@@ -1,15 +1,5 @@
 package com.xy.apple.server;
 
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +12,17 @@ import com.xy.apple.common.bean.RpcResponse;
 import com.xy.apple.common.codec.RpcDecoder;
 import com.xy.apple.common.codec.RpcEncoder;
 import com.xy.apple.common.util.IpUtils;
+import com.xy.apple.exception.RpcException;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
  * RPC 协议
@@ -60,10 +61,10 @@ public class RpcProtocol implements InitializingBean, ApplicationListener<Contex
 		}
 		
 		// 获取服务器ip地址
-		ip = IpUtils.getServerIp();
+		ip = IpUtils.getIp();
 		
 		if (StringUtils.isEmpty(ip)) {
-			throw new RuntimeException("get ip error");
+			throw new RpcException("get ip error");
 		}
 	}
 

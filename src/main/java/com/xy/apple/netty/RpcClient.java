@@ -42,10 +42,12 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
         this.port = port;
     }
     
+    @Override
     public void channelRead0(ChannelHandlerContext ctx, RpcResponse response) throws Exception {
     	this.response = response;
 	}
 
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("api caught exception", cause);
         ctx.close();

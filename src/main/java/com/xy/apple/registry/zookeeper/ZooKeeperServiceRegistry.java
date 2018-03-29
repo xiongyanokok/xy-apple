@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.xy.apple.exception.ParamNotFoundException;
+import com.xy.apple.exception.RpcException;
 import com.xy.apple.registry.ServiceRegistry;
 
 /**
@@ -35,7 +35,7 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry, InitializingBe
 	
 	public void afterPropertiesSet() throws Exception {
 		if (StringUtils.isEmpty(zookeeperAddress)) {
-			throw new ParamNotFoundException("zookeeperAddress not found ");
+			throw new RpcException("zookeeperAddress not found ");
 		}
 		
 		// 创建 ZooKeeper 客户端

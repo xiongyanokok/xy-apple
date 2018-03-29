@@ -3,17 +3,18 @@ package com.xy.apple.netty;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xy.apple.common.bean.RpcRequest;
 import com.xy.apple.common.bean.RpcResponse;
+import com.xy.apple.exception.RpcException;
 import com.xy.apple.registry.ServiceDiscovery;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
 /**
  * RPC 代理（用于创建 RPC 服务代理）
@@ -24,6 +25,10 @@ import com.xy.apple.registry.ServiceDiscovery;
 public class RpcProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcProxy.class);
+    
+    private RpcProxy() {
+    	
+    }
 
     /**
      * 创建代理类
@@ -61,7 +66,7 @@ public class RpcProxy {
 		            logger.debug("discover service: {} => {}", serviceName, serviceAddress);
 		        }
 		        if (StringUtils.isEmpty(serviceAddress)) {
-		            throw new RuntimeException("server address is empty");
+		            throw new RpcException("server address is empty");
 		        }
 		        // 从 RPC 服务地址中解析主机名与端口号
 		        String[] array = StringUtils.split(serviceAddress, ":");
@@ -74,7 +79,7 @@ public class RpcProxy {
 		        RpcResponse response = client.send(request);
 		        logger.debug("time: {}ms", System.currentTimeMillis() - time);
 		        if (response == null) {
-		            throw new RuntimeException("response is null");
+		            throw new RpcException("response is null");
 		        }
 		        // 返回 RPC 响应结果
 		        if (response.hasException()) {

@@ -1,10 +1,6 @@
 package com.xy.apple.server;
 
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import net.sf.cglib.reflect.FastClass;
-import net.sf.cglib.reflect.FastMethod;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -12,6 +8,13 @@ import org.slf4j.LoggerFactory;
 
 import com.xy.apple.common.bean.RpcRequest;
 import com.xy.apple.common.bean.RpcResponse;
+import com.xy.apple.exception.RpcException;
+
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import net.sf.cglib.reflect.FastClass;
+import net.sf.cglib.reflect.FastMethod;
 
 /**
  * RPC 服务端处理器（用于处理 RPC 请求）
@@ -47,9 +50,9 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
      * 
      * @param request
      * @return
-     * @throws Exception
+     * @throws InvocationTargetException 
      */
-    private Object handle(RpcRequest request) throws Exception {
+    private Object handle(RpcRequest request) throws InvocationTargetException {
         // 获取服务对象
         String serviceName = request.getInterfaceName();
         String serviceVersion = request.getServiceVersion();
@@ -58,7 +61,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         }
         Object serviceBean = RpcCommon.getHandlerMap().get(serviceName);
         if (serviceBean == null) {
-            throw new RuntimeException(String.format("can not find service bean by key: %s", serviceName));
+            throw new RpcException(String.format("can not find service bean by key: %s", serviceName));
         }
         // 获取反射调用所需的参数
         Class<?> serviceClass = serviceBean.getClass();
@@ -72,6 +75,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         return serviceFastMethod.invoke(serviceBean, parameters);
     }
 
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("server caught exception", cause);
         ctx.close();

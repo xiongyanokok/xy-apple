@@ -15,8 +15,12 @@ public class Client {
         //RpcProxy rpcProxy = context.getBean(RpcProxy.class);
 
         UserService userService = context.getBean(UserService.class);
-        String result = userService.hello("熊焱");
-        System.out.println(result);
+        String result1 = userService.hello("熊焱");
+        String result2 = userService.hello("熊焱");
+        String result3 = userService.hello("熊焱");
+        System.out.println(result1);
+        System.out.println(result2);
+        System.out.println(result3);
         
        /* Map<String, Object> map = new HashMap<String, Object>();
         map.put("username", "xiongyan");
